@@ -1,0 +1,8 @@
+crawler\PagesIterator.class
+crawler\ParserOfProduct.class
+crawler\HTMLParser.class
+converter\Result.class
+crawler\ParserOfPage.class
+converter\ConvertToXML.class
+crawler\Offer.class
+crawler\AllOffers.class
