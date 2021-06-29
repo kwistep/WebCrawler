@@ -47,7 +47,7 @@ public class PagesIterator implements Iterator {
 
         try {
             document = Jsoup.connect(linkNextPage).timeout(10*1000).get();
-            HTMLParser.numberOfHTTPrequests++;
+            Parser.numberOfHTTPrequests++;
         } catch (IOException e) {
             e.printStackTrace();
         }
