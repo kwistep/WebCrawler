@@ -4,16 +4,16 @@ import crawler.factory.NavigationPageFactory;
 import crawler.factory.ProductPageFactory;
 import crawler.page.navigation.NavigationPage;
 import crawler.page.product.ProductPage;
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.util.Collections.emptyMap;
 
 /*It is the main class which handle all actions*/
 
@@ -45,7 +45,7 @@ public class Parser {
                 .map(url -> {
                     List<String> links = Collections.emptyList();
                     try {
-                        Document document = Jsoup.connect(url).timeout(10 * 1000).get();
+                        Document document = connect(url, Connection.Method.GET, emptyMap(), emptyMap());
                         NavigationPage navigationPage = (NavigationPage) navigationPageFactory.getPageProvider(document);
                         links.addAll(navigationPage.extractProductLinks(document));
                     } catch (IOException | IllegalAccessException | InstantiationException e) {
@@ -61,7 +61,7 @@ public class Parser {
                 .map(productUrl -> {
                     Set<ResultEntity> resultEntities = new HashSet<>();
                     try {
-                        Document document = Jsoup.connect(productUrl).timeout(10 * 1000).get();
+                        Document document = connect(productUrl, Connection.Method.GET, emptyMap(), emptyMap());
                         ProductPage productPage = (ProductPage) productPageFactory.getPageProvider(document);
                         resultEntities.addAll(productPage.retrieveResultEntities(document));
                     } catch (IOException | IllegalAccessException | InstantiationException e) {
@@ -79,6 +79,16 @@ public class Parser {
 
         LocalDateTime finished = LocalDateTime.now();
         System.out.printf("Finished at: %s%n", finished);
+    }
+
+    private static Document connect(String url, Connection.Method httpMethod, Map<String, String> cookies,
+                                    Map<String, String> headers) throws IOException {
+        return Jsoup.connect(url)
+                .method(httpMethod)
+                .cookies(cookies)
+                .headers(headers)
+                .timeout(10 * 1000)
+                .get();
     }
 
 }
